@@ -1,0 +1,21 @@
+{
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "bin/": true,
+    "**/.classpath": true,
+    "**/.project": true,
+    "**/.settings": true,
+    "**/.factorypath": true
+  },
+  "workbench.colorCustomizations": {
+    "activityBar.background": "#520955",
+    "titleBar.activeBackground": "#730D77",
+    "titleBar.activeForeground": "#FEFBFF"
+  },
+  "git.ignoreLimitWarning": true
+}
