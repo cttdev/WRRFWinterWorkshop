@@ -11,25 +11,27 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.MotionProfiledArm;
 
-public class ArmNeutral extends CommandBase {
+public class ArmSetpoint extends CommandBase {
   MotionProfiledArm m_arm;
 
-  public ArmNeutral(MotionProfiledArm arm) {
-    m_arm = arm;
+  private double m_setpoint;
 
+  public ArmSetpoint(MotionProfiledArm arm, double setpoint) {
+    m_arm = arm;
+    m_setpoint = setpoint;
     addRequirements(m_arm);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   public void initialize() {
-    m_arm.setSetpoint(0.0);
+    m_arm.setSetpoint(m_setpoint);
     m_arm.enable();
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   public boolean isFinished() {
-    return false;
+    return m_arm.getController().atSetpoint();
   }
 }

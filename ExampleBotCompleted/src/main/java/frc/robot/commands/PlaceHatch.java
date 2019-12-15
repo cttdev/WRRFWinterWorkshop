@@ -13,9 +13,9 @@ public class PlaceHatch extends SequentialCommandGroup {
 
     addCommands(
       new InstantCommand(slider::extendSlider, slider),
-      new WaitCommand(0.1),
-      new InstantCommand(hook::closeHook, hook),
-      new WaitCommand(0.1),
+      new WaitCommand(1),
+      new InstantCommand(hook::openHook, hook),
+      new WaitCommand(1),
       new InstantCommand(slider::retractSlider, slider)
     );
   }

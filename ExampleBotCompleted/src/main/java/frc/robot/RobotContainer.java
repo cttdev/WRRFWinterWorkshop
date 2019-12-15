@@ -11,29 +11,39 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.ArmNeutral;
+import frc.robot.commands.ArmSetpoint;
+import frc.robot.commands.Auton;
+import frc.robot.commands.PickUpHatch;
+import frc.robot.commands.PlaceHatch;
 import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Hook;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.MotionProfiledArm;
 import frc.robot.subsystems.Slider;
 
-
 /**
- * This class is where the bulk of the robot should be declared.  Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls).  Instead, the structure of the robot
- * (including subsystems, commands, and button mappings) should be declared here.
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a "declarative" paradigm, very little robot logic should
+ * actually be handled in the {@link Robot} periodic methods (other than the
+ * scheduler calls). Instead, the structure of the robot (including subsystems,
+ * commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
   private final XboxController m_joystick = new XboxController(0);
   public final DriveTrain m_drivetrain = new DriveTrain();
-  public final Arm m_arm = new Arm();
+  public final MotionProfiledArm m_arm = new MotionProfiledArm();
   public final Hook m_hook = new Hook();
   public final Slider m_slider = new Slider();
+  public final Intake m_intake = new Intake();
+
+  private final CommandBase m_autonomousCommand = new Auton(m_drivetrain, m_arm, m_slider, m_hook, m_intake);
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -42,6 +52,8 @@ public class RobotContainer {
 
     m_drivetrain.setDefaultCommand(new TankDrive(() -> m_joystick.getY(Hand.kLeft), () -> m_joystick.getY(Hand.kRight), m_drivetrain));
     m_arm.setDefaultCommand(new ArmNeutral(m_arm));
+    m_intake.setDefaultCommand(new RunCommand(() -> m_intake.setPower(m_joystick.getTriggerAxis(Hand.kLeft)- m_joystick.getTriggerAxis(Hand.kRight)), m_intake));
+
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -58,10 +70,10 @@ public class RobotContainer {
     final JoystickButton xButton = new JoystickButton(m_joystick, 3);
     final JoystickButton yButton = new JoystickButton(m_joystick, 4);
 
-    aButton.whenPressed(new InstantCommand(m_hook::closeHook, m_hook));
-    bButton.whenPressed(new InstantCommand(m_slider::extendSlider, m_hook));
-    xButton.whenPressed(new InstantCommand(m_hook::openHook, m_hook));
-    yButton.whenPressed(new InstantCommand(m_slider::retractSlider, m_hook));
+    aButton.whenPressed(new PickUpHatch(m_hook, m_slider));
+    bButton.whenPressed(new PlaceHatch(m_hook, m_slider));
+    xButton.whenHeld(new ArmSetpoint(m_arm, 3600));
+    yButton.whenHeld(new ArmSetpoint(m_arm, -1800));
   }
 
 
@@ -71,6 +83,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return null;
+    return m_autonomousCommand;
   }
 }

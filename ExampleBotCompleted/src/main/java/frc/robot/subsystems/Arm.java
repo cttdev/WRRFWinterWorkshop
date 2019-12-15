@@ -14,25 +14,24 @@ public class Arm extends PIDSubsystem {
 
   private final TalonEncoder m_encoder;
 
-  private final ArmFeedforward m_feedforward = new ArmFeedforward(3.43, 0.017, 0.0158, 0.00208);
+  private final ArmFeedforward m_feedforward = new ArmFeedforward(0, -0.701, 0.0216, 0.00256);
 
   private double m_setpoint = 0.0;
 
   public Arm() {
-    super(new PIDController(0.219, 0, 0.0981));
+    super(new PIDController(0.007, 0, 0.0003));
 
     m_leftMotor.setInverted(true);
     m_rightMotor.set(ControlMode.Follower, 2);
 
     m_encoder = new TalonEncoder(m_rightMotor);
 
-    m_encoder.setDistancePerPulse((Math.PI * 2) / 10240.0);
+    m_encoder.setDistancePerPulse(1.0);
   }
 
   @Override
   public void useOutput(double output) {
-    System.out.println(output + m_feedforward.calculate(m_encoder.getDistance(), m_encoder.getRate()));
-    m_leftMotor.setVoltage(output + m_feedforward.calculate(m_encoder.getDistance(), m_encoder.getRate()));
+    m_leftMotor.setVoltage(output + m_feedforward.calculate(m_setpoint * (360.0 / 10240.0), m_encoder.getRate() * (360.0 / 10240.0)));
   }
 
   @Override
