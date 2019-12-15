@@ -13,9 +13,12 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.ArmNeutral;
 import frc.robot.commands.TankDrive;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Hook;
+import frc.robot.subsystems.MotionProfiledArm;
 import frc.robot.subsystems.Slider;
 
 
@@ -28,6 +31,7 @@ import frc.robot.subsystems.Slider;
 public class RobotContainer {
   private final XboxController m_joystick = new XboxController(0);
   public final DriveTrain m_drivetrain = new DriveTrain();
+  public final Arm m_arm = new Arm();
   public final Hook m_hook = new Hook();
   public final Slider m_slider = new Slider();
 
@@ -37,8 +41,7 @@ public class RobotContainer {
   public RobotContainer() {
 
     m_drivetrain.setDefaultCommand(new TankDrive(() -> m_joystick.getY(Hand.kLeft), () -> m_joystick.getY(Hand.kRight), m_drivetrain));
-    m_hook.setDefaultCommand(new InstantCommand(m_hook::closeHook, m_hook));
-    m_slider.setDefaultCommand(new InstantCommand(m_slider::retractSlider, m_hook));
+    m_arm.setDefaultCommand(new ArmNeutral(m_arm));
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -52,9 +55,13 @@ public class RobotContainer {
   private void configureButtonBindings() {
     final JoystickButton aButton = new JoystickButton(m_joystick, 1);
     final JoystickButton bButton = new JoystickButton(m_joystick, 2);
+    final JoystickButton xButton = new JoystickButton(m_joystick, 3);
+    final JoystickButton yButton = new JoystickButton(m_joystick, 4);
 
-    aButton.toggleWhenPressed(new InstantCommand(m_hook::closeHook, m_hook));
-    bButton.toggleWhenPressed(new InstantCommand(m_slider::extendSlider, m_hook));
+    aButton.whenPressed(new InstantCommand(m_hook::closeHook, m_hook));
+    bButton.whenPressed(new InstantCommand(m_slider::extendSlider, m_hook));
+    xButton.whenPressed(new InstantCommand(m_hook::openHook, m_hook));
+    yButton.whenPressed(new InstantCommand(m_slider::retractSlider, m_hook));
   }
 
 

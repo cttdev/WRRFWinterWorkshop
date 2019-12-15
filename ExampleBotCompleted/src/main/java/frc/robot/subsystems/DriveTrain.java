@@ -1,10 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2019 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
@@ -29,10 +22,8 @@ public class DriveTrain extends SubsystemBase {
    * Create a new drive train subsystem.
    */
   public DriveTrain() {
-    super();
-
-    // Add drivetrain to Sendable
-    addChild("Drive", m_drivetrain);
+    m_left.setInverted(true);
+    m_right.setInverted(true);
   }
 
   /**
