@@ -7,16 +7,19 @@ import frc.robot.subsystems.Hook;
 import frc.robot.subsystems.Slider;
 
 public class PlaceHatch extends SequentialCommandGroup {
+  private final Hook m_hook;
+  private final Slider m_slider;
 
   public PlaceHatch(Hook hook, Slider slider) {
-    addRequirements(hook, slider);
+    m_hook = hook;
+    m_slider = slider;
 
     addCommands(
-      new InstantCommand(slider::extendSlider, slider),
+      new InstantCommand(m_slider::extendSlider, m_slider),
       new WaitCommand(1),
-      new InstantCommand(hook::openHook, hook),
+      new InstantCommand(m_hook::openHook, m_hook),
       new WaitCommand(1),
-      new InstantCommand(slider::retractSlider, slider)
+      new InstantCommand(m_slider::retractSlider, m_slider)
     );
   }
 }

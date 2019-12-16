@@ -7,17 +7,20 @@ import frc.robot.subsystems.Hook;
 import frc.robot.subsystems.Slider;
 
 public class PickUpHatch extends SequentialCommandGroup {
+  private final Hook m_hook;
+  private final Slider m_slider;
 
   public PickUpHatch(Hook hook, Slider slider) {
-    addRequirements(hook, slider);
+    m_hook = hook;
+    m_slider = slider;
 
     addCommands(
-      new InstantCommand(hook::openHook, hook),
-      new InstantCommand(slider::extendSlider, slider),
+      new InstantCommand(m_hook::openHook, m_hook),
+      new InstantCommand(m_slider::extendSlider, m_slider),
       new WaitCommand(0.5),
-      new InstantCommand(hook::closeHook, hook),
+      new InstantCommand(m_hook::closeHook, m_hook),
       new WaitCommand(0.1),
-      new InstantCommand(slider::retractSlider, slider)
+      new InstantCommand(m_slider::retractSlider, m_slider)
     );
   }
 }

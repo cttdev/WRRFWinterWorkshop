@@ -26,8 +26,6 @@ public class Auton extends SequentialCommandGroup {
     m_hook = hook;
     m_intake = intake;
 
-    addRequirements(m_arm, m_slider, m_hook, m_intake);
-
     addCommands(
         new ArmSetpoint(m_arm, 3600),
         new WaitCommand(1),
